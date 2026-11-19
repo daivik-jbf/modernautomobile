@@ -1,27 +1,20 @@
 /**
  * Brand lockup: "MA" mark + divider + wordmark.
- * NOTE: the mark is redrawn from the design screenshot (traced at 12x zoom).
- * Swap the <svg> for the official logo file when available.
+ * The mark is the official artwork (assets/Modern-Automobiles-Footer-Assets/ma-mark.svg).
  */
+export function LogoMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 107 36" className={`w-auto text-brand-logo ${className}`} fill="currentColor" aria-hidden="true">
+      <path d="M0 35 24 1h14l-1 14L49 1h15l-1 15L76 1h14l17 34H93L82 12 66 35H51l2-16-15 16H24l2-16-12 16z" />
+      <path d="m74 29 6-9 5 9z" />
+    </svg>
+  );
+}
+
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`flex items-center gap-4 ${className}`}>
-      <svg
-        viewBox="60 35 880 312"
-        className="h-[20px] w-auto text-brand-logo sm:h-[24px]"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        {/* M — two slanted legs with a bridged centre */}
-        <path d="M60 345 H185 L385 38 H265 Z" />
-        <path d="M290 345 H390 L595 38 H495 Z" />
-        <path d="M292 185 L385 38 L398 100 L495 38 L397 185 Z" />
-        <path d="M497 185 L595 38 L645 110 L695 38 L597 185 Z" />
-        {/* A — left leg, right leg, crossbar */}
-        <path d="M490 345 H600 L805 38 H695 Z" />
-        <path d="M805 38 L935 345 H820 L735 135 Z" />
-        <path d="M683 236 H766 L792 285 H650 Z" />
-      </svg>
+      <LogoMark className="h-[20px] sm:h-[24px]" />
       <span className="h-6 w-px bg-white/35" aria-hidden="true" />
       <span className="font-condensed text-[15px] font-semibold uppercase tracking-[0.06em] text-white sm:text-lg">
         Modern Automobiles

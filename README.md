@@ -52,6 +52,8 @@ Source images live in `assets/`; the site uses processed, content-hashed copies 
 | `npm run images:hero` | `assets/home_page_image.png` | crops, enlarges, sharpens and exports the home hero as small responsive WebP files + an instant blurred preview |
 | `npm run images:site` | `assets/bike_service_images`, `assets/maintenace_plans` | converts the service and plan pictures (and the menu thumbnails) to small WebP files |
 | `npm run images:app` | `assets/Modern-Automobiles-App-Promo-Assets` | builds the phone photo, feature icons and store badges for the "Your bike service, in your pocket" section |
+| `npm run images:about` | `assets/Modern-Automobiles-About-Us-Assets` | builds the team photo and the three "What you can expect" icons for the About us section |
+| `npm run images:footer` | `assets/Modern-Automobiles-Footer-Assets` | builds the motorcycle drawing for the site footer |
 | `npm run images:how` | `assets/how_modernautomobiles_images` (`01-…` to `05-…`) | enlarges, sharpens and adds fine grain to the "How it works" photos |
 | `npm run images:parts` | `assets/parts_oil_images` | turns the brand logos into crisp white (or outlined colour) logos for the "Parts & oils we use" carousel |
 

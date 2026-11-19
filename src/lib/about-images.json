@@ -1,0 +1,34 @@
+{
+  "team": {
+    "width": 1930,
+    "height": 952,
+    "variants": [
+      {
+        "width": 960,
+        "src": "/images/about/team-960-51267540.webp"
+      },
+      {
+        "width": 1930,
+        "src": "/images/about/team-1930-abccdc0f.webp"
+      }
+    ],
+    "lqip": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAAAQBQCdASoYAAwAPt1cpkyopSOiMAgBEBuJZACw7ywYYJn4UrNhTqao30Vhd9XXbc8AAP7sBKt5a+IijOFoV77pcU64bDn9+At01tIO1jvh1sU7dADovB64qg4i5lu84+Z+bdQ6armoToKoa+htHCO8n+zuhuKrBjf3a1Mux4Aa/AN70APLzpJCtVO9tvNqjDIAFtHtMvGwnsFP7cpoF9iIA5QGoAAA"
+  },
+  "icons": {
+    "approval": {
+      "src": "/images/about/approval-840352a1.webp",
+      "width": 164,
+      "height": 172
+    },
+    "inspection": {
+      "src": "/images/about/inspection-c46d0539.webp",
+      "width": 164,
+      "height": 172
+    },
+    "service-record": {
+      "src": "/images/about/service-record-16ab64ad.webp",
+      "width": 164,
+      "height": 172
+    }
+  }
+}
