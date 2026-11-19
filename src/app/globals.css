@@ -1,0 +1,498 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — sampled from the approved home-page design.
+ * Change a value here and it updates across the whole site.
+ */
+@theme {
+  --color-brand: #d8191f; /* primary red: CTA button */
+  --color-brand-hover: #b9141a;
+  --color-brand-logo: #e61920; /* logo mark red (slightly brighter) */
+  --color-ink: #0a0a0a; /* nav bar black */
+  --color-stage: #202121; /* dark hero background (right side) */
+  --color-cream: #fcf8f1; /* headline / light text */
+  --color-field: #f7f3ec; /* form field surface */
+  --color-field-ink: #1f1f1f;
+  --color-surface: #181919; /* services page background */
+
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --font-condensed: var(--font-barlow-condensed), var(--font-barlow), sans-serif;
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-up: fade-up 0.7s var(--ease-out-expo) both;
+  --animate-photo-in: photo-in 1.4s var(--ease-out-expo) both;
+  --animate-shake: shake 0.4s ease-in-out;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes photo-in {
+    from {
+      opacity: 0;
+      transform: scale(1.035) translateX(-1.5%);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes shake {
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(2px); }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    color-scheme: dark;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 3px;
+  }
+
+  /* touch: no grey tap flash (we show our own pressed states) and no 300ms tap delay */
+  a,
+  button,
+  [role="button"],
+  [role="option"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* ---- Scroll reveal (CSS scroll-driven animation; no JS). Unsupported browsers show content as-is. ---- */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry calc(var(--i, 0) * 3%) entry calc(38% + var(--i, 0) * 3%);
+  }
+}
+
+/* ---- Error / status screens ---- */
+@keyframes err-rise {
+  from { transform: translateY(112%); }
+  to { transform: none; }
+}
+@keyframes err-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.06) translate(-1%, -0.6%); }
+}
+.err-rise {
+  animation: err-rise 0.95s var(--ease-out-expo) both;
+}
+.err-drift {
+  animation: err-drift 28s ease-in-out infinite alternate;
+}
+
+/* ---- Scroll reveals (heading words / eyebrow bars) ---- */
+@keyframes word-up {
+  from { transform: translateY(110%); }
+  to { transform: none; }
+}
+@supports (animation-timeline: view()) {
+  .word-up {
+    animation: word-up linear both;
+    animation-timeline: view();
+    animation-range: entry calc(var(--w, 0) * 4%) entry calc(32% + var(--w, 0) * 4%);
+  }
+}
+
+/* ---- "How it works": pinned, scroll-driven walkthrough (components/how-scroller.tsx) ---- */
+/* The outer section is taller than the screen; the inner panel is sticky, so the page stays pinned
+   while scrolling moves through the steps. 70svh of scrolling per step. */
+.how-outer {
+  --pin: calc(100svh - 56px);
+  --step: 70svh;
+  height: calc(var(--pin) + var(--n, 5) * var(--step));
+}
+.how-pin {
+  position: sticky;
+  top: 56px;
+  height: var(--pin);
+  min-height: 29rem;
+}
+@media (min-width: 640px) {
+  .how-outer { --pin: calc(100svh - 60px); }
+  .how-pin { top: 60px; }
+}
+
+/* slide text: leaves quickly, enters with a staggered rise. before = above, after = below, so the
+   direction follows the scroll direction in both ways. */
+.how-item {
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s var(--ease-out-expo),
+    visibility 0s linear 0.4s;
+}
+.how-slide[data-state="active"] .how-item {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity 0.7s ease calc(var(--d, 0) * 90ms + 200ms),
+    transform 1s var(--ease-out-expo) calc(var(--d, 0) * 90ms + 200ms),
+    visibility 0s;
+}
+.how-slide[data-state="before"] .how-item {
+  opacity: 0;
+  transform: translate3d(0, -28px, 0);
+  visibility: hidden;
+}
+.how-slide[data-state="after"] .how-item {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0);
+  visibility: hidden;
+}
+
+/* photos: cross-fade with a soft zoom; --lp (0→1 across the step) drives a gentle parallax */
+.how-photo {
+  opacity: 0;
+  transform: scale(1.08);
+  transition:
+    opacity 0.35s ease,
+    transform 0.6s ease;
+}
+.how-photo[data-state="active"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.9s ease 0.1s,
+    transform 1.6s var(--ease-out-expo);
+}
+.how-photo[data-state="before"] {
+  transform: scale(1.03);
+}
+.how-parallax {
+  will-change: transform;
+  transform: translate3d(calc((0.5 - var(--lp, 0)) * -1.6%), calc((0.5 - var(--lp, 0)) * 3.2%), 0);
+}
+
+/* step tabs: finished = thin red, current = thick red that grows with --lp, upcoming = hidden */
+.how-tab-bar {
+  height: 2px;
+  background: var(--color-brand);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+.how-tab[data-state="before"] .how-tab-bar {
+  transform: scaleX(1);
+  opacity: 0.75;
+  transition: opacity 0.4s ease;
+}
+.how-tab[data-state="active"] .how-tab-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-brand), var(--color-brand-logo));
+  transform: scaleX(calc(0.14 + var(--lp, 0) * 0.86));
+}
+.how-tab-n,
+.how-tab-label {
+  color: rgb(252 248 241 / 0.5);
+  transition: color 0.35s ease;
+}
+.how-tab[data-state="active"] .how-tab-n,
+.how-tab[data-state="active"] .how-tab-label {
+  color: #fff;
+}
+.how-tab[data-state="active"] .how-tab-label {
+  font-weight: 600;
+}
+.how-tab[data-state="before"] .how-tab-n {
+  color: var(--color-brand-logo);
+}
+.how-tab:hover .how-tab-n,
+.how-tab:hover .how-tab-label {
+  color: #fff;
+}
+@keyframes how-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+.how-bob {
+  animation: how-bob 1.6s ease-in-out infinite;
+}
+
+/* ---- Reveal fallback for browsers without scroll-driven animations (older iOS Safari) ---- */
+.io-reveal .reveal:not([data-in]) {
+  opacity: 0;
+  transform: translateY(32px);
+}
+.io-reveal .reveal {
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+.io-reveal .word-up:not([data-in]) {
+  transform: translateY(110%);
+}
+.io-reveal .word-up {
+  transition: transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--w, 0) * 70ms);
+}
+
+/* ---- "Parts & oils we use": 3D ring carousel (components/parts-carousel.tsx) ---- */
+/* tile width scales with the screen (and is capped by the screen height so the ring always fits);
+   ring radius = tile width × --k (set from the tile count), perspective = 3 × radius. */
+.parts {
+  --twd: max(105px, min(29vw, 150px, calc((100svh - 360px) / 1.78))); /* tile width as shown on screen */
+  --tilt: -9deg;
+}
+@media (min-width: 768px) {
+  .parts { --twd: max(140px, min(19vw, 205px, calc((100svh - 380px) / 1.78))); }
+}
+@media (min-width: 1024px) {
+  .parts { --twd: max(140px, min(13.5vw, 250px, calc((100svh - 380px) / 1.78))); }
+}
+.parts-stage {
+  position: relative;
+  height: calc(var(--twd) * 1.78);
+  margin-top: 0.5rem;
+  cursor: grab;
+  touch-action: pan-y; /* vertical swipes still scroll the page; horizontal ones spin the ring */
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+/* Supersampling: the 3D scene is built --z times bigger and scaled back down. Browsers draw 3D-transformed
+   layers at their own size and then stretch them as they come toward the viewer (blurry logos); with a
+   bigger scene the tiles are only ever shrunk, so they stay crisp. The best factor depends on the screen
+   density (measured against a flat render of the same logo): 4x on normal/laptop screens, 2x on 200%
+   screens, and none on phone-class (>= 2.25x) screens, which already draw tiles at very high resolution. */
+.parts-zoom {
+  --z: 4; /* supersampling factor: how much bigger the 3D scene is built (measured best per screen density) */
+  --tw: calc(var(--twd) * var(--z));
+  --th: calc(var(--tw) * 0.84);
+  --r: calc(var(--tw) * var(--k, 2));
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(100% * var(--z));
+  height: calc(100% * var(--z));
+  transform: scale(calc(1 / var(--z)));
+  transform-origin: 0 0;
+  perspective: calc(var(--r) * 3);
+  perspective-origin: 50% 36%;
+}
+@media (min-resolution: 1.75dppx) {
+  .parts-zoom { --z: 2; }
+}
+@media (min-resolution: 2.25dppx) {
+  .parts-zoom { --z: 1; }
+}
+/* intro: the stage starts hidden and fades in (the fade must be here, NOT on the 3D ring: opacity < 1
+   on a preserve-3d element flattens its 3D scene and the cylinder collapses while fading) */
+.parts-stage {
+  transition: opacity 0.9s ease;
+}
+.parts-stage[data-intro="pending"] {
+  opacity: 0;
+}
+.parts-stage:active { cursor: grabbing; }
+.parts-stage:focus-visible { outline: 2px solid var(--color-cream); outline-offset: 6px; border-radius: 14px; }
+.parts-ring {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.parts-tile {
+  position: absolute;
+  width: var(--tw);
+  height: var(--th);
+  left: calc(var(--tw) * -0.5);
+  top: calc(var(--th) * -0.5);
+  transform-style: preserve-3d;
+}
+.parts-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: calc(var(--tw) * 0.075);
+  border: calc(2px * var(--z, 3)) solid rgb(255 255 255 / 0.07); /* 2px on screen */
+  background: linear-gradient(160deg, #222223, #19191a);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  transition: border-color 0.45s ease;
+}
+.parts-back { transform: rotateY(180deg); background: linear-gradient(160deg, #2a2a2b, #202021); }
+/* the logo seen from behind: readable orientation (the face is already turned 180°), frosted + dim */
+.parts-backlogo {
+  pointer-events: none;
+  opacity: 0.62;
+  filter: blur(calc(var(--tw) * 0.022));
+  transform: scale(0.94);
+}
+.parts-tile[data-active="true"] .parts-front { border-color: var(--color-brand); }
+.parts-logo {
+  pointer-events: none;
+}
+/* depth: tiles darken as they turn away from the viewer (--s is written per frame) */
+.parts-shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: var(--s, 0);
+  pointer-events: none;
+}
+/* soft pools of light on the "floor" under the ring */
+.parts-floor {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(125%, 1700px);
+  height: 62%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 13% 24% at 12% 52%, rgb(255 238 214 / 0.10), transparent 72%),
+    radial-gradient(ellipse 13% 24% at 88% 52%, rgb(255 238 214 / 0.10), transparent 72%),
+    radial-gradient(ellipse 11% 20% at 34% 70%, rgb(255 238 214 / 0.08), transparent 72%),
+    radial-gradient(ellipse 11% 20% at 66% 70%, rgb(255 238 214 / 0.08), transparent 72%),
+    radial-gradient(ellipse 46% 26% at 50% 62%, rgb(255 255 255 / 0.03), transparent 74%);
+}
+.parts-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border: 1px solid rgb(255 255 255 / 0.75);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+@media (min-width: 640px) {
+  .parts-arrow { width: 3.25rem; height: 3.25rem; }
+}
+.parts-arrow:hover { background: #fff; color: var(--color-ink); transform: scale(1.06); }
+.parts-arrow:active { transform: scale(0.94); }
+
+/* ---- Navbar dropdown panel (see components/nav-links.tsx) ---- */
+.nav-panel {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-10px) scale(0.97);
+  transform-origin: top center;
+  transition:
+    opacity 0.18s ease,
+    transform 0.3s var(--ease-out-expo),
+    visibility 0s linear 0.3s;
+}
+.nav-panel[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.3s var(--ease-out-expo),
+    visibility 0s;
+}
+.nav-panel[data-open="true"] .nav-item {
+  animation: option-in 0.35s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 28ms + 40ms);
+}
+
+/* ---- Dropdown panel (see components/select-field.tsx) ---- */
+.select-panel {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: top center;
+  transition:
+    opacity 0.18s ease,
+    transform 0.28s var(--ease-out-expo),
+    visibility 0s linear 0.28s;
+}
+.select-panel[data-up="true"] {
+  transform: translateY(8px) scale(0.97);
+  transform-origin: bottom center;
+}
+.select-panel[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.28s var(--ease-out-expo),
+    visibility 0s;
+}
+.select-panel[data-open="true"] .select-option {
+  animation: option-in 0.3s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 24ms);
+}
+@keyframes option-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.select-panel::-webkit-scrollbar {
+  width: 8px;
+}
+.select-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .err-drift,
+  .err-rise,
+  .animate-ping {
+    animation: none !important;
+  }
+  .reveal,
+  .word-up,
+  .how-bob {
+    animation: none !important;
+  }
+  .how-parallax {
+    transform: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
+}
