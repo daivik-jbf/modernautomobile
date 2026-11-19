@@ -1,18 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { Step } from "@/lib/steps";
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
+/** Minimum time (ms) each step stays on screen when the scroll moves faster than that (see the sequencer below). */
+const MIN_DWELL = 520;
+
+const now = () => performance.now();
 
 /**
  * "How it works" as a scroll-driven walkthrough.
  *
  * The section is taller than the screen; its inner panel is `position: sticky`, so the page
  * stays pinned on one panel while the scroll position decides which step is shown.
- *  - The active step is discrete (React state, changes only at step boundaries).
+ *  - The scroll position decides which step is the TARGET. The step actually SHOWN moves toward it one
+ *    step at a time with a minimum dwell (MIN_DWELL), so a fast scroll / flick plays 2 → 3 → 4 → 5 in order
+ *    instead of jumping over steps (a "sequencer"). Tab clicks and reduced motion jump straight to the step.
+ *  - The shown step is discrete (React state, changes only at step boundaries).
  *  - Everything continuous (the red progress bar, the photo parallax) is driven by a per-element
  *    `--lp` CSS variable (0 → 1 across that step) written straight to the DOM in a rAF loop,
  *    so scrolling never triggers a React re-render.
@@ -28,13 +36,52 @@ export function HowScroller({ steps, heading }: { steps: Step[]; heading: ReactN
   const slideEls = useRef<(HTMLElement | null)[]>([]);
   const tabEls = useRef<(HTMLElement | null)[]>([]);
 
+  // ---- step sequencer: `target` follows the scroll, `shown` catches up one step at a time ----
+  const targetRef = useRef(0);
+  const shownRef = useRef(0);
+  const lastChange = useRef(0);
+  const stepTimer = useRef(0);
+  const instantUntil = useRef(0); // while now < this, jump straight to the target (tab click)
+  const settleRef = useRef<() => void>(() => {}); // lets the sequencer schedule itself
+  const jumpTo = useRef(-1); // step chosen by a tab click; held while the page scrolls there
+
+  /** how long the current step must stay on screen before the next one may replace it */
+  const dwell = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches || now() < instantUntil.current
+      ? 0
+      : MIN_DWELL;
+
+  const settle = useCallback(() => {
+    stepTimer.current = 0;
+    const from = shownRef.current;
+    const to = targetRef.current;
+    if (from === to) return;
+    const wait = dwell();
+    const next = wait === 0 ? to : from + Math.sign(to - from); // one step at a time, unless told to jump
+    shownRef.current = next;
+    lastChange.current = now();
+    setActive(next);
+    if (next !== to) stepTimer.current = window.setTimeout(() => settleRef.current(), wait);
+  }, []);
+
+  useEffect(() => {
+    settleRef.current = settle;
+  }, [settle]);
+
+  /** the target changed: start moving the shown step toward it (respecting the minimum dwell) */
+  const kick = useCallback(() => {
+    if (stepTimer.current || shownRef.current === targetRef.current) return;
+    const wait = Math.max(0, dwell() - (now() - lastChange.current));
+    stepTimer.current = window.setTimeout(() => settleRef.current(), wait);
+  }, []);
+
   useEffect(() => {
     const outer = outerRef.current;
     const pin = pinRef.current;
     if (!outer || !pin) return;
 
     let raf = 0;
-    let last = -1;
+    let initialized = false;
     let stickyTop = parseFloat(getComputedStyle(pin).top) || 0;
 
     const update = () => {
@@ -49,10 +96,17 @@ export function HowScroller({ steps, heading }: { steps: Step[]; heading: ReactN
         slideEls.current[i]?.style.setProperty("--lp", lp);
         tabEls.current[i]?.style.setProperty("--lp", lp);
       }
-      const idx = Math.min(n - 1, Math.floor(x));
-      if (idx !== last) {
-        last = idx;
+      // during the smooth scroll that follows a tab click, hold the clicked step (don't replay the ones in between)
+      const jumping = jumpTo.current >= 0 && now() < instantUntil.current;
+      const idx = jumping ? jumpTo.current : Math.min(n - 1, Math.floor(x));
+      targetRef.current = idx;
+      if (!initialized) {
+        // first reading (e.g. the page was reloaded half-way through): show that step at once, no catch-up
+        initialized = true;
+        shownRef.current = idx;
         setActive(idx);
+      } else {
+        kick();
       }
     };
     const onScroll = () => {
@@ -70,8 +124,10 @@ export function HowScroller({ steps, heading }: { steps: Step[]; heading: ReactN
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
+      if (stepTimer.current) window.clearTimeout(stepTimer.current);
+      stepTimer.current = 0;
     };
-  }, [n]);
+  }, [n, kick]);
 
   /** scroll the page so that step `i` is in the middle of its share of the travel */
   const goTo = (i: number) => {
@@ -82,6 +138,12 @@ export function HowScroller({ steps, heading }: { steps: Step[]; heading: ReactN
     const travel = outer.offsetHeight - pin.offsetHeight;
     const outerTop = outer.getBoundingClientRect().top + window.scrollY;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // a tab click is a deliberate jump: show that step at once and hold it while the page scrolls there
+    jumpTo.current = i;
+    instantUntil.current = now() + 2000;
+    targetRef.current = i;
+    shownRef.current = i;
+    setActive(i);
     window.scrollTo({
       top: outerTop - stickyTop + ((i + 0.5) / n) * travel,
       behavior: reduced ? "auto" : "smooth",
@@ -122,7 +184,6 @@ export function HowScroller({ steps, heading }: { steps: Step[]; heading: ReactN
                     alt=""
                     fill
                     unoptimized
-                    priority={i < 2}
                     sizes="(min-width: 1024px) 60vw, 100vw"
                     className="object-cover"
                     style={{ objectPosition: s.image.focus }}
