@@ -1,0 +1,51 @@
+{
+  "phone": {
+    "width": 1592,
+    "height": 1882,
+    "variants": [
+      {
+        "width": 828,
+        "src": "/images/app/phone-828-83554be9.webp"
+      },
+      {
+        "width": 1592,
+        "src": "/images/app/phone-1592-b961aa6c.webp"
+      }
+    ],
+    "lqip": "data:image/webp;base64,UklGRgYBAABXRUJQVlA4IPoAAAAQBgCdASoYABwAPt1iqU+opSOiKAqpEBuJagC98Tv49S6kKhNtsHzGzWLvReCDqotZiq/7LEqEUGAA/vnD1WngEoWRlgZHC6jhyRuZGkzRjkdY+VO0eY3cvGQkN8nxgxj6bFIFvFjN7WHIsoHYw+e/wKbKZgKgQqdUmzSI+wRJg34t2kOGqVXIHWYtWFlJfyYXeYskvfp0w5qAgzc9G1ub2d4sAOWnZBQIs5jApTHi1HycBAUbo3RvZeH9sDU8jFpAAJ94R5Fj/kmI3SUnBVhTCBxxEd53/fEsAF0HRoz7z1llz3wY3fRHbZNbOYVb+38Eh3rfDT66YAAA"
+  },
+  "icons": {
+    "history-and-reminders": {
+      "src": "/images/app/history-and-reminders-d1351e93.webp",
+      "width": 164,
+      "height": 164
+    },
+    "job-cards-and-invoices": {
+      "src": "/images/app/job-cards-and-invoices-acbf29ef.webp",
+      "width": 164,
+      "height": 164
+    },
+    "live-service-updates": {
+      "src": "/images/app/live-service-updates-28fb9d78.webp",
+      "width": 164,
+      "height": 164
+    },
+    "quote-approvals": {
+      "src": "/images/app/quote-approvals-4ff6c8b5.webp",
+      "width": 164,
+      "height": 164
+    }
+  },
+  "badges": {
+    "app-store": {
+      "src": "/images/app/app-store-7b8b2ebe.webp",
+      "width": 678,
+      "height": 208
+    },
+    "google-play": {
+      "src": "/images/app/google-play-12cdb447.webp",
+      "width": 678,
+      "height": 212
+    }
+  }
+}

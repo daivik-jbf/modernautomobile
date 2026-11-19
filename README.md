@@ -24,6 +24,7 @@ Fonts: Anton (headline), Barlow Condensed (brand / labels / buttons), Barlow (bo
 ## Placeholders to replace
 
 - `src/lib/catalog.ts` — branches, brands and models are sample data.
+- `src/lib/app.ts` — paste the real Google Play / App Store links into `APP_LINKS` (the badges just scroll to the section until then).
 - `src/components/logo.tsx` — the "MA" mark is redrawn from a screenshot; swap in the official SVG.
 - `/track`, `/book` and `/plans/*` are not built yet (they currently show the 404 screen).
 
@@ -50,6 +51,7 @@ Source images live in `assets/`; the site uses processed, content-hashed copies 
 | `npm run images` | all of the below | runs everything in one go |
 | `npm run images:hero` | `assets/home_page_image.png` | crops, enlarges, sharpens and exports the home hero as small responsive WebP files + an instant blurred preview |
 | `npm run images:site` | `assets/bike_service_images`, `assets/maintenace_plans` | converts the service and plan pictures (and the menu thumbnails) to small WebP files |
+| `npm run images:app` | `assets/Modern-Automobiles-App-Promo-Assets` | builds the phone photo, feature icons and store badges for the "Your bike service, in your pocket" section |
 | `npm run images:how` | `assets/how_modernautomobiles_images` (`01-…` to `05-…`) | enlarges, sharpens and adds fine grain to the "How it works" photos |
 | `npm run images:parts` | `assets/parts_oil_images` | turns the brand logos into crisp white (or outlined colour) logos for the "Parts & oils we use" carousel |
 

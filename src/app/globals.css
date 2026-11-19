@@ -398,6 +398,34 @@
 .parts-arrow:hover { background: #fff; color: var(--color-ink); transform: scale(1.06); }
 .parts-arrow:active { transform: scale(0.94); }
 
+/* ---- Mobile-app section (components/app-*.tsx) ---- */
+/* scroll parallax for the phone photo: --app-p (0..1) is written from JS; rounded to whole pixels so the
+   photo never rests on a half-pixel (which would soften it). Unsupported round() => simply no parallax. */
+.app-parallax {
+  transform: translateY(round(to-zero, calc((0.5 - var(--app-p, 0.5)) * 56px), 1px));
+}
+.app-label {
+  color: rgb(252 248 241 / 0.82);
+  transition: color 0.4s ease;
+}
+.app-feature[data-active="true"] .app-label {
+  color: #fff;
+}
+.app-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-brand-logo);
+  opacity: 0;
+}
+.app-feature[data-active="true"] .app-ring {
+  animation: app-ring 1.9s ease-out infinite;
+}
+@keyframes app-ring {
+  0% { opacity: 0.95; transform: scale(0.82); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
 /* ---- Navbar dropdown panel (see components/nav-links.tsx) ---- */
 .nav-panel {
   opacity: 0;
@@ -481,8 +509,12 @@
   }
   .reveal,
   .word-up,
-  .how-bob {
+  .how-bob,
+  .app-ring {
     animation: none !important;
+  }
+  .app-parallax {
+    transform: none !important;
   }
   .how-parallax {
     transform: none !important;

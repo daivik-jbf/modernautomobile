@@ -1,3 +1,4 @@
+import { AppSection } from "@/components/app-section";
 import { Hero } from "@/components/hero";
 import { HowItWorksSection } from "@/components/how-it-works";
 import { RevealFallback } from "@/components/reveal-fallback";
@@ -17,6 +18,7 @@ export default function Home() {
         <PlansSection />
         <HowItWorksSection />
         <PartsSection />
+        <AppSection />
       </main>
     </>
   );

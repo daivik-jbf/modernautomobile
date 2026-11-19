@@ -11,7 +11,8 @@
     "images:parts": "node scripts/build-parts-images.cjs",
     "images:hero": "node scripts/build-hero-image.cjs",
     "images:site": "node scripts/build-site-images.cjs",
-    "images": "npm run images:hero && npm run images:site && npm run images:how && npm run images:parts"
+    "images": "npm run images:hero && npm run images:site && npm run images:how && npm run images:parts && npm run images:app",
+    "images:app": "node scripts/build-app-images.cjs"
   },
   "dependencies": {
     "next": "16.4.6",
