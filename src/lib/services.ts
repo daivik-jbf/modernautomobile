@@ -1,8 +1,13 @@
 /**
  * Service catalogue shown on the home page (#services).
- * Images live in /public/images/services (source files: assets/bike_service_images).
+ * Images: public/images/services/<name>-<hash>.webp, listed in site-images.json — both generated from
+ * assets/bike_service_images by `npm run images:site` (run it after replacing a picture).
  * Later this will come from the database so admins can edit services & pricing.
  */
+
+import siteImages from "./site-images.json";
+
+const img = (key: string) => (siteImages as Record<string, ServiceImage>)[key];
 
 export type ServiceImage = { src: string; width: number; height: number };
 
@@ -18,48 +23,48 @@ export const FEATURED_SERVICE = {
   title: "General service",
   blurb: "Book a pickup or drop-off. We inspect your bike and send a quote for your approval.",
   cta: "Book an inspection",
-  image: { src: "/images/services/general-service.png", width: 1100, height: 275 },
-} as const;
+  image: img("services/general-service"),
+};
 
 export const SERVICES: Service[] = [
   {
     slug: "oil-filter-change",
     title: ["Oil &", "Filter change"],
-    image: { src: "/images/services/oil-filter.png", width: 186, height: 126 },
+    image: img("services/oil-filter"),
   },
   {
     slug: "brake-service",
     title: ["Brake", "Service"],
-    image: { src: "/images/services/brake-service.png", width: 247, height: 126 },
+    image: img("services/brake-service"),
   },
   {
     slug: "chain-sprocket",
     title: ["Chain &", "Sprocket"],
-    image: { src: "/images/services/chain-sprocket.png", width: 232, height: 126 },
+    image: img("services/chain-sprocket"),
   },
   {
     slug: "tyres-wheels",
     title: ["Tyres &", "Wheels"],
-    image: { src: "/images/services/tyres-wheels.png", width: 239, height: 126 },
+    image: img("services/tyres-wheels"),
   },
   {
     slug: "battery-electrical",
     title: ["Battery &", "Electrical"],
-    image: { src: "/images/services/battery-electrical.png", width: 232, height: 126 },
+    image: img("services/battery-electrical"),
   },
   {
     slug: "engine-service",
     title: ["Engine", "Service"],
-    image: { src: "/images/services/engine-service.png", width: 225, height: 128 },
+    image: img("services/engine-service"),
   },
   {
     slug: "suspension-service",
     title: ["Suspension", "Service"],
-    image: { src: "/images/services/suspension-service.png", width: 225, height: 126 },
+    image: img("services/suspension-service"),
   },
   {
     slug: "wash-detailing",
     title: ["Wash &", "Detailing"],
-    image: { src: "/images/services/bike-wash.png", width: 250, height: 128 },
+    image: img("services/bike-wash"),
   },
 ];

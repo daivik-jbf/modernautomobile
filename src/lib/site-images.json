@@ -1,0 +1,82 @@
+{
+  "services/battery-electrical": {
+    "src": "/images/services/battery-electrical-d6cc0f65.webp",
+    "width": 232,
+    "height": 126
+  },
+  "services/bike-wash": {
+    "src": "/images/services/bike-wash-449e8ec3.webp",
+    "width": 250,
+    "height": 128
+  },
+  "services/brake-service": {
+    "src": "/images/services/brake-service-2f7eadd6.webp",
+    "width": 247,
+    "height": 126
+  },
+  "services/chain-sprocket": {
+    "src": "/images/services/chain-sprocket-dd8145b7.webp",
+    "width": 232,
+    "height": 126
+  },
+  "services/engine-service": {
+    "src": "/images/services/engine-service-0554ede4.webp",
+    "width": 225,
+    "height": 128
+  },
+  "services/general-service": {
+    "src": "/images/services/general-service-59a5e8ee.webp",
+    "width": 1100,
+    "height": 275
+  },
+  "services/oil-filter": {
+    "src": "/images/services/oil-filter-7c749f69.webp",
+    "width": 186,
+    "height": 126
+  },
+  "services/suspension-service": {
+    "src": "/images/services/suspension-service-f0532179.webp",
+    "width": 225,
+    "height": 126
+  },
+  "services/tyres-wheels": {
+    "src": "/images/services/tyres-wheels-a95f4edc.webp",
+    "width": 239,
+    "height": 126
+  },
+  "plans/annual-maintenance": {
+    "src": "/images/plans/annual-maintenance-e1b29c56.webp",
+    "width": 820,
+    "height": 554
+  },
+  "plans/half-year-maintenance": {
+    "src": "/images/plans/half-year-maintenance-64f8477c.webp",
+    "width": 770,
+    "height": 277
+  },
+  "plans/short-term-maintenance": {
+    "src": "/images/plans/short-term-maintenance-de9fbaa5.webp",
+    "width": 770,
+    "height": 250
+  },
+  "services/general-service-thumb": {
+    "src": "/images/services/general-service-thumb-e11bbd4b.webp",
+    "width": 176,
+    "height": 96
+  },
+  "plans/short-term-thumb": {
+    "src": "/images/plans/short-term-thumb-e13f101e.webp",
+    "width": 168,
+    "height": 104
+  },
+  "plans/half-year-thumb": {
+    "src": "/images/plans/half-year-thumb-d046c95e.webp",
+    "width": 168,
+    "height": 104
+  },
+  "plans/annual-thumb": {
+    "src": "/images/plans/annual-thumb-4437f92d.webp",
+    "width": 168,
+    "height": 104
+  }
+}

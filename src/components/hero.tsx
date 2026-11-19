@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { HeroPhoto } from "./hero-photo";
 import { BookingForm } from "./booking-form";
 
 /**
@@ -9,9 +9,8 @@ import { BookingForm } from "./booking-form";
  * - The content column (headline + form) is intentionally compact, on the right.
  * - <lg: photo on top, fading down into the content.
  *
- * `public/images/hero-left-v2.png` is a cropped + upscaled + sharpened version of
- * `assets/home_page_image.png` (the empty right half of the original was removed).
- * For a truly crisp result, replace it with a higher-resolution original (3000px+ wide).
+ * The photo itself is built by `npm run images:hero` (crop + enlarge + sharpen + responsive WebP files)
+ * and rendered by <HeroPhoto /> (instant blurred preview, then a fade-in once loaded).
  */
 export function Hero() {
   return (
@@ -20,17 +19,7 @@ export function Hero() {
       className="relative isolate flex flex-col overflow-hidden bg-stage sm:min-h-[calc(100svh-60px)] lg:min-h-[max(calc(100svh-60px),42vw)]"
     >
       <div className="absolute inset-x-0 top-0 -z-10 h-[79vw] overflow-hidden lg:left-0 lg:right-auto lg:h-auto lg:w-[59vw] lg:overflow-visible">
-        <Image
-          src="/images/hero-left-v2.png"
-          alt=""
-          width={2260}
-          height={1794}
-          loading="eager"
-          fetchPriority="high"
-          sizes="(min-width: 1024px) 59vw, 100vw"
-          quality={92}
-          className="animate-photo-in block h-auto w-full max-w-none [mask-image:linear-gradient(to_bottom,#000_82%,transparent)] lg:[mask-image:linear-gradient(to_right,#000_80%,transparent)]"
-        />
+        <HeroPhoto />
         {/* The photo itself is masked to transparent at its outer edge, so no hairline can show at the seam. */}
         {/* lg+: soft darkening, then melt into the stage colour on the right edge */}
         <div className="absolute inset-0 hidden bg-gradient-to-r from-black/12 from-0% via-black/28 via-78% to-stage to-100% lg:block" />

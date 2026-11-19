@@ -1,8 +1,13 @@
 /**
  * Maintenance plans shown on the home page (#plans).
- * Images live in /public/images/plans (source files: assets/maintenace_plans).
+ * Images: public/images/plans/<name>-<hash>.webp, listed in site-images.json — both generated from
+ * assets/maintenace_plans by `npm run images:site` (run it after replacing a picture).
  * Later this will come from the database so admins can edit plans and pricing.
  */
+
+import siteImages from "./site-images.json";
+
+const img = (key: string) => (siteImages as Record<string, { src: string; width: number; height: number }>)[key];
 
 export type Plan = {
   slug: string;
@@ -18,7 +23,7 @@ export const ANNUAL_PLAN: Plan = {
   title: ["Annual Maintenance"],
   duration: "12 months",
   cta: "View annual plan",
-  image: { src: "/images/plans/annual-maintenance.png", width: 820, height: 554 },
+  image: img("plans/annual-maintenance"),
 };
 
 export const OTHER_PLANS: Plan[] = [
@@ -27,13 +32,13 @@ export const OTHER_PLANS: Plan[] = [
     title: ["Short-term", "Maintenance"],
     duration: "3 months",
     cta: "View plan",
-    image: { src: "/images/plans/short-term-maintenance.png", width: 770, height: 250 },
+    image: img("plans/short-term-maintenance"),
   },
   {
     slug: "half-year",
     title: ["Half-year", "Maintenance"],
     duration: "6 months",
     cta: "View plan",
-    image: { src: "/images/plans/half-year-maintenance.png", width: 770, height: 277 },
+    image: img("plans/half-year-maintenance"),
   },
 ];

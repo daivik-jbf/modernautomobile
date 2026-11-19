@@ -39,7 +39,7 @@ export function ServicesSection() {
               alt=""
               fill
               sizes="(min-width: 1024px) 72vw, 100vw"
-              quality={92}
+              unoptimized
               className="object-cover object-right transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             />
           </div>
@@ -85,7 +85,7 @@ export function ServicesSection() {
                     alt=""
                     width={s.image.width}
                     height={s.image.height}
-                    quality={92}
+                    unoptimized
                     className="h-full w-auto max-w-none origin-right transition-transform duration-500 ease-out group-hover:scale-[1.07] group-active:scale-[1.07]"
                   />
                 </div>

@@ -1,5 +1,8 @@
 import { ANNUAL_PLAN, OTHER_PLANS } from "./plans";
+import siteImages from "./site-images.json";
 import { FEATURED_SERVICE, SERVICES } from "./services";
+
+const thumb = (key: string) => (siteImages as Record<string, { src: string }>)[key].src;
 
 export type MenuItem = {
   label: string;
@@ -39,7 +42,7 @@ export const NAV_ITEMS: NavItem[] = [
           label: FEATURED_SERVICE.title,
           href: `/book?service=${FEATURED_SERVICE.slug}`,
           sub: "Inspection & quote",
-          image: { src: "/images/services/general-service-thumb.png", position: "center" },
+          image: { src: thumb("services/general-service-thumb"), position: "center" },
         },
         ...SERVICES.map((s) => ({
           label: s.title.join(" "),
@@ -62,7 +65,7 @@ export const NAV_ITEMS: NavItem[] = [
         href: `/plans/${p.slug}`,
         sub: p.duration,
         // purpose-cut thumbnails (2x) so they stay crisp at 84x52
-        image: { src: `/images/plans/${p.slug}-thumb.png`, position: "center" },
+        image: { src: thumb(`plans/${p.slug}-thumb`), position: "center" },
       })),
     },
   },

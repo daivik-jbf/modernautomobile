@@ -43,10 +43,13 @@ All of them share `src/components/error-screen.tsx`; artwork is in `public/image
 
 ## Images (build scripts)
 
-Source images live in `assets/`; the site uses processed copies in `public/images/`. After replacing an image in `assets/`, run the matching script (output files get a content hash in their name, so browsers never show a stale copy):
+Source images live in `assets/`; the site uses processed, content-hashed copies in `public/images/` (served as static, immutable files, so there is no on-demand image processing after a deploy). After replacing an image in `assets/`, run the matching script (output files get a content hash in their name, so browsers never show a stale copy):
 
 | Command | Source folder | What it does |
 | --- | --- | --- |
+| `npm run images` | all of the below | runs everything in one go |
+| `npm run images:hero` | `assets/home_page_image.png` | crops, enlarges, sharpens and exports the home hero as small responsive WebP files + an instant blurred preview |
+| `npm run images:site` | `assets/bike_service_images`, `assets/maintenace_plans` | converts the service and plan pictures (and the menu thumbnails) to small WebP files |
 | `npm run images:how` | `assets/how_modernautomobiles_images` (`01-…` to `05-…`) | enlarges, sharpens and adds fine grain to the "How it works" photos |
 | `npm run images:parts` | `assets/parts_oil_images` | turns the brand logos into crisp white (or outlined colour) logos for the "Parts & oils we use" carousel |
 

@@ -59,7 +59,7 @@ export function PlansSection() {
               alt=""
               fill
               sizes="(min-width: 1024px) 46vw, 100vw"
-              quality={92}
+              unoptimized
               className="-z-20 object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             />
             <div
@@ -88,7 +88,7 @@ export function PlansSection() {
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 44vw, 100vw"
-                  quality={92}
+                  unoptimized
                   className="-z-20 object-cover object-right transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                 />
                 {/* keeps text readable when the photo sits behind it on narrow screens */}
