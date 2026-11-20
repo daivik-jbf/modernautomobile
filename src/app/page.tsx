@@ -6,12 +6,14 @@ import { RevealFallback } from "@/components/reveal-fallback";
 import { PartsSection } from "@/components/parts-section";
 import { PlansSection } from "@/components/plans-section";
 import { ServicesSection } from "@/components/services-section";
+import { Splash } from "@/components/splash";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 export default function Home() {
   return (
     <>
+      <Splash />
       <SiteHeader />
       <RevealFallback />
       <main className="flex flex-1 flex-col">

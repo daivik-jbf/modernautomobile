@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     // them for a year (repeat visits and navigation then load them instantly from cache).
     const immutable = "public, max-age=31536000, immutable";
     return [
-      { source: "/images/:dir(hero|how|parts|services|plans|app|about|footer)/:file*", headers: [{ key: "Cache-Control", value: immutable }] },
+      { source: "/images/:dir(hero|how|parts|services|plans|app|about|footer|loading)/:file*", headers: [{ key: "Cache-Control", value: immutable }] },
       // error-screen pictures are not hashed: cache for a day, refresh quietly in the background
       { source: "/images/errors/:file*", headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }] },
     ];

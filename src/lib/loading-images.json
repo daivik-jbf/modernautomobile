@@ -1,0 +1,12 @@
+{
+  "bike": {
+    "src": "/images/loading/bike-43d6574c.webp",
+    "width": 1160,
+    "height": 660
+  },
+  "brand": {
+    "src": "/images/loading/brand-d77f823f.webp",
+    "width": 1580,
+    "height": 160
+  }
+}
