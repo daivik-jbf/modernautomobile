@@ -2,7 +2,7 @@ import { HowScroller } from "./how-scroller";
 import { HOW_SUBTITLE, HOW_TITLE, STEPS } from "@/lib/steps";
 
 /**
- * "How Modern Automobiles works" — the last section of the home page (id="how-it-works").
+ * "How Maadan Automobiles works" — the last section of the home page (id="how-it-works").
  * Server part: the heading (words slide up on scroll, CSS only). The pinned, scroll-driven
  * walkthrough lives in <HowScroller /> (client).
  */

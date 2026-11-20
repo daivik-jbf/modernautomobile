@@ -539,6 +539,14 @@
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
+.ld-wordmark {
+  font-family: var(--font-barlow-condensed-italic), var(--font-condensed);
+  font-style: italic;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  color: #efe7d6;
+}
 .ld-bike { animation: ld-bike 1.1s var(--ease-out-expo) both; }
 .ld-brand { animation: ld-wipe 1s cubic-bezier(0.65, 0, 0.35, 1) 0.35s both; }
 .ld-track { animation: ld-rise 0.7s var(--ease-out-expo) 0.8s both; }

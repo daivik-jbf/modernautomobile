@@ -24,7 +24,7 @@ export function AboutPhoto() {
       <Image
         src={variants[variants.length - 1].src}
         loader={loader}
-        alt="Two Modern Automobiles technicians inspecting a motorcycle in the workshop and reviewing it on a tablet"
+        alt="Two Maadan Automobiles technicians inspecting a motorcycle in the workshop and reviewing it on a tablet"
         width={ABOUT_PHOTO.width}
         height={ABOUT_PHOTO.height}
         sizes="(min-width: 1024px) 60vw, 100vw"

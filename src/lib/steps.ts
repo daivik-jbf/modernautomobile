@@ -1,5 +1,5 @@
 /**
- * "How Modern Automobiles works" — the 5-step customer journey (home page, #how-it-works).
+ * "How Maadan Automobiles works" — the 5-step customer journey (home page, #how-it-works).
  * Photos: public/images/how/step-N-<hash>.webp, listed in how-images.json — both generated from
  * assets/how_modernautomobiles_images by `npm run images:how` (run it after replacing any image there).
  */
@@ -16,7 +16,7 @@ export type Step = {
   image: { src: string; width: number; height: number; focus: string };
 };
 
-export const HOW_TITLE = "How Modern Automobiles works";
+export const HOW_TITLE = "How Maadan Automobiles works";
 export const HOW_SUBTITLE = "Follow every service update in your mobile app.";
 
 export const STEPS: Step[] = [

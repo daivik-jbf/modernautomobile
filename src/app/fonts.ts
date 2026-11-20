@@ -15,6 +15,15 @@ export const barlowCondensed = Barlow_Condensed({
   display: "swap",
 });
 
+/** italic, used only by the loading-screen lockup */
+export const barlowCondensedItalic = Barlow_Condensed({
+  variable: "--font-barlow-condensed-italic",
+  subsets: ["latin"],
+  weight: "600",
+  style: "italic",
+  display: "swap",
+});
+
 export const anton = Anton({
   variable: "--font-anton",
   subsets: ["latin"],
@@ -22,4 +31,4 @@ export const anton = Anton({
   display: "swap",
 });
 
-export const fontVariables = `${barlow.variable} ${barlowCondensed.variable} ${anton.variable}`;
+export const fontVariables = `${barlow.variable} ${barlowCondensed.variable} ${barlowCondensedItalic.variable} ${anton.variable}`;

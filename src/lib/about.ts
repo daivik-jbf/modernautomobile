@@ -41,6 +41,6 @@ export const ABOUT_PHOTO = images.team;
 
 /**
  * Contact details for the footer's "Contact us". TODO: fill in — until then the link just scrolls to the footer.
- * e.g. email: "hello@modernautomobiles.in", phone: "+91 98765 43210"
+ * e.g. email: "hello@maadanautomobiles.in", phone: "+91 98765 43210"
  */
 export const CONTACT = { email: "", phone: "" };

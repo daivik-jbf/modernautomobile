@@ -1,4 +1,4 @@
-# Modern Automobiles
+# Maadan Automobiles
 
 Bike-service platform: customers book a service (pickup or drop-off), approve a quote
 before repairs begin, and track appointment and repair status live.
@@ -54,7 +54,7 @@ Source images live in `assets/`; the site uses processed, content-hashed copies 
 | `npm run images:app` | `assets/Modern-Automobiles-App-Promo-Assets` | builds the phone photo, feature icons and store badges for the "Your bike service, in your pocket" section |
 | `npm run images:about` | `assets/Modern-Automobiles-About-Us-Assets` | builds the team photo and the three "What you can expect" icons for the About us section |
 | `npm run images:footer` | `assets/Modern-Automobiles-Footer-Assets` | builds the motorcycle drawing for the site footer |
-| `npm run images:loading` | `assets/Modern-Automobiles-Loading-Screen-Assets` | builds the motorcycle drawing and brand lockup for the loading screen / first-visit splash |
+| `npm run images:loading` | `assets/Modern-Automobiles-Loading-Screen-Assets` | builds the motorcycle drawing for the loading screen / first-visit splash (the brand lockup there is live text) |
 | `npm run images:how` | `assets/how_modernautomobiles_images` (`01-…` to `05-…`) | enlarges, sharpens and adds fine grain to the "How it works" photos |
 | `npm run images:parts` | `assets/parts_oil_images` | turns the brand logos into crisp white (or outlined colour) logos for the "Parts & oils we use" carousel |
 

@@ -39,7 +39,7 @@ function ErrorHeader() {
   return (
     <header className="relative z-20 bg-ink">
       <div className="flex h-14 items-center justify-between px-5 sm:h-[60px] lg:px-[3%]">
-        <a href="/" aria-label="Modern Automobiles — home">
+        <a href="/" aria-label="Maadan Automobiles — home">
           <Logo />
         </a>
         <nav aria-label="Primary" className="hidden items-center gap-7 md:flex lg:gap-9">

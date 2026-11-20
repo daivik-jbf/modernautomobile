@@ -5,8 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Modern Automobiles — Bike service, pickup & drop-off",
-    template: "%s | Modern Automobiles",
+    default: "Maadan Automobiles — Bike service, pickup & drop-off",
+    template: "%s | Maadan Automobiles",
   },
   description:
     "Book a bike service with pickup or drop-off, approve your quote before repairs begin, and track your repair status live.",

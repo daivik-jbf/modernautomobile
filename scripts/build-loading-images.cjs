@@ -2,9 +2,8 @@
 /**
  * Builds the pictures for the loading screen.
  *   assets/Modern-Automobiles-Loading-Screen-Assets/motorcycle.png     ->  2x sharpened WebP
- *   assets/Modern-Automobiles-Loading-Screen-Assets/brand-lockup.png   ->  2x sharpened WebP
  *   manifest: src/lib/loading-images.json      output files: public/images/loading/<name>-<hash>.webp
- * Both pictures sit on the screen's own near-black (#0c0c0d), so they blend in with no visible box.
+ * The picture sits on the screen's own near-black (#0c0c0d), so they blend in with no visible box.
  * Output names carry a content hash, so browsers/CDNs can cache them forever and never show a stale copy.
  * Run after replacing a source:   npm run images:loading
  */
@@ -19,7 +18,6 @@ const MANIFEST = path.join(__dirname, "..", "src", "lib", "loading-images.json")
 
 const JOBS = [
   { key: "bike", file: "motorcycle.png", width: 1160, sharpen: { sigma: 0.9, m1: 0.6, m2: 1.2 } },
-  { key: "brand", file: "brand-lockup.png", width: 1580, sharpen: { sigma: 0.8, m1: 0.7, m2: 1.4 } },
 ];
 
 (async () => {

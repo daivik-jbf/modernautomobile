@@ -17,7 +17,7 @@ export function Logo({ className = "" }: { className?: string }) {
       <LogoMark className="h-[20px] sm:h-[24px]" />
       <span className="h-6 w-px bg-white/35" aria-hidden="true" />
       <span className="font-condensed text-[15px] font-semibold uppercase tracking-[0.06em] text-white sm:text-lg">
-        Modern Automobiles
+        Maadan Automobiles
       </span>
     </span>
   );

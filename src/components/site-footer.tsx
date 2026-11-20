@@ -14,12 +14,12 @@ export function SiteFooter() {
       <div className="mx-auto w-full max-w-[1920px] px-5 sm:px-8 lg:px-[4%]">
         {/* ---------- brand row ---------- */}
         <div className="reveal flex flex-col gap-5 py-7 sm:flex-row sm:items-center sm:justify-between sm:py-8 lg:py-9">
-          <Link href="/" aria-label="Modern Automobiles — home" className="flex items-center gap-4 sm:gap-5">
+          <Link href="/" aria-label="Maadan Automobiles — home" className="flex items-center gap-4 sm:gap-5">
             <LogoMark className="h-[28px] sm:h-[36px] lg:h-[clamp(2.4rem,3.4vw,3.8rem)]" />
             <span className="h-[clamp(2.6rem,4vw,4.2rem)] w-px bg-white/45" aria-hidden="true" />
             <span className="flex flex-col">
               <span className="font-condensed text-[1.2rem] font-bold uppercase leading-none tracking-[0.12em] text-cream sm:text-[1.7rem] lg:text-[clamp(1.6rem,2.5vw,2.8rem)]">
-                Modern Automobiles
+                Maadan Automobiles
               </span>
               <span className="mt-1.5 text-[13px] text-cream/90 sm:text-base lg:text-[clamp(1rem,1.5vw,1.7rem)]">{FOOTER_TAGLINE}</span>
             </span>
@@ -72,7 +72,7 @@ export function SiteFooter() {
 
         {/* ---------- bottom strip ---------- */}
         <div className="flex items-center justify-between py-5 text-[14px] text-cream/80 sm:py-6 sm:text-base lg:text-[clamp(0.95rem,1.1vw,1.2rem)]">
-          <p>© Modern Automobiles</p>
+          <p>© Maadan Automobiles</p>
           <a href="#" className="footer-link group/top inline-flex items-center gap-2 text-cream/90">
             Back to top
             <ArrowUp className="size-[1.15em] transition-transform duration-300 group-hover/top:-translate-y-1" />

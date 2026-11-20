@@ -9,7 +9,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 bg-ink">
       <div className="flex h-14 items-center justify-between px-5 sm:h-[60px] lg:px-[4%]">
-        <Link href="/" aria-label="Modern Automobiles — home">
+        <Link href="/" aria-label="Maadan Automobiles — home">
           <Logo />
         </Link>
 

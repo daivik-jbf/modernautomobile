@@ -62,7 +62,7 @@ export function AppPhone() {
         <Image
           src={variants[variants.length - 1].src}
           loader={loader}
-          alt="The Modern Automobiles app on a phone showing a service awaiting approval, with the workshop in the background"
+          alt="The Maadan Automobiles app on a phone showing a service awaiting approval, with the workshop in the background"
           width={APP_PHONE.width}
           height={APP_PHONE.height}
           sizes="(min-width: 1024px) 48vw, 100vw"

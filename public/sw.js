@@ -1,5 +1,5 @@
 /*
- * Modern Automobiles — offline service worker.
+ * Maadan Automobiles — offline service worker.
  * Purpose: when a page can't be loaded because the visitor has no connection, show the branded
  * /offline screen instead of the browser's error. Nothing else is cached or changed:
  *  - page navigations always go to the network first;

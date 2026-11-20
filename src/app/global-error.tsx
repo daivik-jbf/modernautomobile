@@ -19,7 +19,7 @@ export default function GlobalError({ error, retry }: { error: unknown; retry: (
   return (
     <html lang="en" className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <title>Something went wrong | Modern Automobiles</title>
+        <title>Something went wrong | Maadan Automobiles</title>
         <ErrorScreen
           code="500"
           label="Server error."
