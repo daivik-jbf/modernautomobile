@@ -9,7 +9,7 @@ import { CONTACT } from "./about";
 import { ANNUAL_PLAN, OTHER_PLANS } from "./plans";
 import { FEATURED_SERVICE, SERVICES } from "./services";
 
-export const FOOTER_TAGLINE = "Itemised quotes. Repairs you approve.";
+export const FOOTER_TAGLINE = "The smartest pit stop for your bike.";
 export const FOOTER_BIKE = (footerImages as { bike: { src: string; width: number; height: number } }).bike;
 
 export type FooterLink = { label: string; href: string };

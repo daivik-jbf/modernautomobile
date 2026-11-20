@@ -86,6 +86,7 @@ export function MobileNav() {
                                     alt=""
                                     fill
                                     sizes="64px"
+                                    loading="eager"
                                     unoptimized
                                     style={{ objectPosition: m.image.position }}
                                     className="object-cover"

@@ -5,21 +5,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import type { Brand } from "@/lib/parts";
 
-const AUTO_MS = 3200; // time each brand stays in front during the automatic rotation
-const IDLE_MS = 5000; // how long after the visitor's last interaction before auto-rotation resumes
+const CRUISE_MS_PER_BRAND = 5200; // the ring turns by itself, smoothly, at this pace (time for one brand to pass the front)
+const IDLE_MS = 2200; // how long after the visitor lets go before the ring starts turning by itself again
+const FLING_MAX = 0.26; // deg/ms: fastest a swipe can throw the ring (keeps brands passing one after another, in order)
 
 type Ease = (t: number) => number;
 /** soft start AND soft finish: no snap at the beginning of a move */
 const easeInOutCubic: Ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-/** for the glide after a drag release (it already starts at the drag speed) */
-const easeOutCubic: Ease = (t) => 1 - Math.pow(1 - t, 3);
 const mod = (a: number, n: number) => ((a % n) + n) % n;
 
 /**
  * 3D circular carousel ("cylinder" of brand tiles).
- *  - Drag / swipe to spin (the front surface follows your finger), release to glide and snap to a tile.
+ *  - Drag / swipe to spin (the front surface follows your finger); on release it keeps its momentum and
+ *    glides to rest on a brand (critically-damped spring: no sudden stop, never more than two brands away).
  *  - Arrow buttons, ← → keys, or click a side tile to bring it to the front.
- *  - Rotates by itself while on screen; pauses on hover/focus/touch; spins in when first revealed.
+ *  - While on screen it turns by itself at a steady, smooth pace (speeding up / slowing down gently, never
+ *    jumping); it pauses while the mouse is over it and resumes shortly after a visitor lets go.
  *  - Reduced-motion users get no auto-rotation and no intro spin.
  * The ring angle lives in a ref and is written straight to the DOM (no React render per frame);
  * only the "active brand" is React state. Geometry comes from CSS variables (see `.parts-*` in globals.css).
@@ -47,6 +48,9 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
   const prepped = useRef(false);
   const introTarget = useRef(0);
   const introRunning = useRef(false);
+  const vel = useRef(0); // current angular speed, deg/ms (negative = towards the next brand)
+  const snap = useRef<number | null>(null); // angle the ring is settling onto after a release
+  const animating = useRef(false); // an eased move (arrows / click / intro) is in charge of the angle
 
   /** write the current angle to the DOM: ring rotation, per-tile depth shading, active brand */
   const render = useCallback(() => {
@@ -64,6 +68,9 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
   const stop = () => {
     if (raf.current) cancelAnimationFrame(raf.current);
     raf.current = 0;
+    animating.current = false;
+    snap.current = null;
+    vel.current = 0;
   };
 
   const animateTo = useCallback(
@@ -76,6 +83,7 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
         onDone?.();
         return;
       }
+      animating.current = true;
       const t0 = performance.now();
       const tick = (now: number) => {
         const t = Math.min(1, (now - t0) / ms);
@@ -84,6 +92,8 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
         if (t < 1) raf.current = requestAnimationFrame(tick);
         else {
           raf.current = 0;
+          animating.current = false;
+          vel.current = 0;
           onDone?.();
         }
       };
@@ -99,8 +109,15 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
       setPhase("done");
     }
   };
-  const goNext = useCallback(() => animateTo(Math.round(angle.current / step) * step - step, 1000), [animateTo, step]);
-  const goPrev = useCallback(() => animateTo(Math.round(angle.current / step) * step + step, 1000), [animateTo, step]);
+  const goBy = useCallback(
+    (dir: 1 | -1) => {
+      const target = Math.round(angle.current / step) * step + dir * step;
+      animateTo(target, Math.min(1000, 650 + Math.abs(target - angle.current) * 8));
+    },
+    [animateTo, step],
+  );
+  const goNext = useCallback(() => goBy(-1), [goBy]);
+  const goPrev = useCallback(() => goBy(1), [goBy]);
   const goTo = (i: number) => {
     // shortest way round to bring tile i to the front; longer trips take a little longer
     const delta = mod(-i * step - angle.current + 180, 360) - 180;
@@ -151,17 +168,56 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
     return () => io.disconnect();
   }, [render, animateTo]);
 
-  // automatic rotation
+  // The motion loop (runs while the carousel is on screen). One place decides how the ring moves when nobody is
+  // dragging it and no eased move is running:
+  //  - settling after a release: critically-damped spring onto the chosen brand (keeps the swipe's momentum),
+  //  - turning by itself: speed eases up to a calm cruise and back down, so nothing ever jumps,
+  //  - paused (mouse over it): comes to rest centred on a brand.
   useEffect(() => {
     if (!inView) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setInterval(() => {
-      if (hovering.current || drag.current || introRunning.current) return;
-      if (performance.now() - lastTouch.current < IDLE_MS) return;
-      goNext();
-    }, AUTO_MS);
-    return () => window.clearInterval(t);
-  }, [inView, goNext]);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cruise = -step / CRUISE_MS_PER_BRAND;
+    const omega = (2 * Math.PI) / 1100; // spring stiffness: about one second to settle
+    let last = performance.now();
+    let id = 0;
+    function frame(t: number) {
+      id = requestAnimationFrame(frame);
+      const dt = Math.min(40, Math.max(1, t - last));
+      last = t;
+      if (animating.current || drag.current || introRunning.current) return;
+
+      let a = angle.current;
+      let v = vel.current;
+      const canCruise = !reduced && !hovering.current && t - lastTouch.current > IDLE_MS;
+
+      if (snap.current === null && !canCruise) {
+        const rest = Math.round((a + v * 350) / step) * step;
+        if (Math.abs(v) > 0.0004 || Math.abs(a - rest) > 0.05) snap.current = rest;
+      }
+
+      if (snap.current !== null) {
+        const x = a - snap.current;
+        v += (-omega * omega * x - 2 * omega * v) * dt;
+        a += v * dt;
+        if (Math.abs(x) < 0.03 && Math.abs(v) < 0.0006) {
+          a = snap.current;
+          v = 0;
+          snap.current = null;
+        }
+      } else if (canCruise) {
+        v += (cruise - v) * (1 - Math.exp(-dt / 600));
+        a += v * dt;
+      }
+
+      vel.current = v;
+      if (a !== angle.current) {
+        angle.current = a;
+        render();
+      }
+    }
+    id = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(id);
+  }, [inView, step, render]);
 
   // ----- drag / swipe -----
   const degPerPx = () => {
@@ -197,10 +253,19 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
     if (!d) return;
     touch();
     if (d.moved) {
-      // if the pointer rested before release there is no fling
-      const v = performance.now() - d.t > 90 ? 0 : d.v;
-      const projected = angle.current + v * 320; // let it glide a little …
-      animateTo(Math.round(projected / step) * step, 1000, easeOutCubic); // … then settle on a tile
+      // keep the swipe's momentum (clamped) and glide to rest on a brand - never more than two brands from where
+      // the finger left it, so brands keep passing the front one after another, in order
+      const v = performance.now() - d.t > 90 ? 0 : Math.max(-FLING_MAX, Math.min(FLING_MAX, d.v));
+      const base = Math.round(angle.current / step) * step;
+      const rest = Math.max(base - 2 * step, Math.min(base + 2 * step, Math.round((angle.current + v * 350) / step) * step));
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        angle.current = rest;
+        vel.current = 0;
+        render();
+      } else {
+        vel.current = v;
+        snap.current = rest;
+      }
     } else {
       // a tap/click: bring the tile under the pointer to the front
       const tile = document.elementFromPoint(e.clientX, e.clientY)?.closest<HTMLElement>("[data-tile]");
@@ -241,8 +306,8 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
             touch();
           }
         }}
-        onFocus={() => {
-          hovering.current = true;
+        onFocus={(e) => {
+          if (e.currentTarget.matches(":focus-visible")) hovering.current = true; // keyboard focus only (a tap also focuses it)
         }}
         onBlur={() => {
           hovering.current = false;
@@ -341,7 +406,6 @@ export function PartsCarousel({ brands, initial }: { brands: Brand[]; initial: n
           </svg>
         </button>
       </div>
-      <p className="mt-2 text-center text-[15px] text-cream/60 sm:mt-3 sm:text-lg">Drag to rotate</p>
 
       {/* full list for screen readers / search engines (the 3D tiles are decorative) */}
       <ul className="sr-only">

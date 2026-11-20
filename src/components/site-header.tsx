@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "./icons";
 import { Logo } from "./logo";
+import { NavImagePreload } from "./nav-image-preload";
 import { MobileNav } from "./mobile-nav";
 import { NavLinks } from "./nav-links";
 
@@ -25,6 +26,7 @@ export function SiteHeader() {
             <ArrowRight className="size-4" />
           </Link>
           <MobileNav />
+          <NavImagePreload />
         </div>
       </div>
     </header>

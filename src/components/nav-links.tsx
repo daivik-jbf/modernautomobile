@@ -208,6 +208,7 @@ function NavEntry({
                             alt=""
                             fill
                             sizes="96px"
+                            loading="eager"
                             unoptimized
                             style={{ objectPosition: m.image.position }}
                             className="object-cover transition-transform duration-500 ease-out group-hover/item:scale-110"

@@ -5,7 +5,7 @@ import { LogoMark } from "./logo";
 import { FOOTER_COLUMNS, FOOTER_TAGLINE, FOOTER_BIKE } from "@/lib/footer";
 
 /**
- * Site footer: brand + tagline + "Track booking", three link columns with the motorcycle drawing, and a
+ * Site footer: brand + tagline, three link columns with the motorcycle drawing, and a
  * copyright / "Back to top" strip. Everything slides in on scroll (CSS only); the bike rolls in from the right.
  */
 export function SiteFooter() {
@@ -23,13 +23,6 @@ export function SiteFooter() {
               </span>
               <span className="mt-1.5 text-[13px] text-cream/90 sm:text-base lg:text-[clamp(1rem,1.5vw,1.7rem)]">{FOOTER_TAGLINE}</span>
             </span>
-          </Link>
-          <Link
-            href="/track"
-            className="footer-track group/track inline-flex w-fit items-center gap-3 rounded-xl border border-white/85 px-5 py-2.5 font-condensed text-[15px] font-semibold uppercase tracking-[0.1em] text-white sm:px-6 sm:py-3 sm:text-lg"
-          >
-            Track booking
-            <ArrowRight className="size-5 transition-transform duration-300 group-hover/track:translate-x-1.5" />
           </Link>
         </div>
 

@@ -77,7 +77,8 @@ export function PlansSection() {
 
           {/* Two stacked plans */}
           <div className="grid gap-4 lg:grid-rows-2 lg:gap-[13px]">
-            {OTHER_PLANS.map((p, i) => (
+            {/* half-year on top, short-term below (the menus keep short → long) */}
+            {[...OTHER_PLANS].sort((a, b) => (a.slug === "half-year" ? -1 : b.slug === "half-year" ? 1 : 0)).map((p, i) => (
               <article
                 key={p.slug}
                 className="reveal group relative isolate flex min-h-[150px] items-center overflow-hidden sm:min-h-[220px] lg:min-h-0 rounded-lg border border-white/[0.24] bg-[#131313] transition-[border-color,box-shadow] duration-300 hover:border-brand/70 hover:shadow-[0_18px_44px_-18px_rgba(216,25,31,0.55)]"

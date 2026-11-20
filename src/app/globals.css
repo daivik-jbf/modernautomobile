@@ -495,12 +495,7 @@
 .footer-link:hover::after,
 .footer-link:focus-visible::after { transform: scaleX(1); }
 
-/* footer: "Track booking" fills white on hover; the motorcycle drawing rolls in from the right as the footer scrolls into view */
-.footer-track {
-  transition: background-color 0.35s ease, color 0.35s ease, transform 0.35s var(--ease-out-expo);
-}
-.footer-track:hover { background: #fff; color: var(--color-ink); }
-.footer-track:active { transform: scale(0.97); }
+/* footer: the motorcycle drawing rolls in from the right as the footer scrolls into view */
 @keyframes footer-roll {
   from { transform: translateX(22%); opacity: 0; }
   to { transform: none; opacity: 1; }
