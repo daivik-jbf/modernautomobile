@@ -7,8 +7,9 @@ import { APP_PHONE } from "@/lib/app";
 const variants = APP_PHONE.variants;
 
 /** pick the smallest pre-built file that is at least `width` px wide */
+// (the ?w= is not used by the static file server — it only lets next/image see that the loader honours `width`)
 const loader = ({ width }: { src: string; width: number }) =>
-  (variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src;
+  `${(variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src}?w=${width}`;
 
 /**
  * The phone-and-workshop photo. Pre-built responsive WebP files (no on-demand resizing), an inline blurred

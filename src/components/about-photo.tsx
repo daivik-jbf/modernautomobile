@@ -6,8 +6,9 @@ import { ABOUT_PHOTO } from "@/lib/about";
 const variants = ABOUT_PHOTO.variants;
 
 /** pick the smallest pre-built file that is at least `width` px wide */
+// (the ?w= is not used by the static file server — it only lets next/image see that the loader honours `width`)
 const loader = ({ width }: { src: string; width: number }) =>
-  (variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src;
+  `${(variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src}?w=${width}`;
 
 /**
  * The two technicians at the workshop. Pre-built responsive WebP files (no on-demand resizing) over an

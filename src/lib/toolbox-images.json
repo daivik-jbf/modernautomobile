@@ -1,0 +1,21 @@
+{
+  "crop": {
+    "x": 440,
+    "y": 80
+  },
+  "stage": {
+    "src": "/images/toolbox/stage-e0e2b20a.webp",
+    "width": 1232,
+    "height": 861
+  },
+  "front": {
+    "src": "/images/toolbox/front-df53b082.webp",
+    "width": 1616,
+    "height": 760
+  },
+  "tray": {
+    "src": "/images/toolbox/tray-36e226bb.webp",
+    "width": 1050,
+    "height": 386
+  }
+}

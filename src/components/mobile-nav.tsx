@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, ChevronDown, MenuIcon } from "./icons";
+import { ArrowRight, ChevronDown, MenuIcon, UserIcon } from "./icons";
 import { NAV_ITEMS } from "@/lib/nav";
 
 /** Hamburger menu for screens below `lg`. Desktop nav lives in SiteHeader / NavLinks. */
@@ -128,9 +128,17 @@ export function MobileNav() {
             })}
           </ul>
           <Link
+            href="/login"
+            onClick={closeAll}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-base font-medium text-white transition-colors active:bg-[#b8141a]"
+          >
+            <UserIcon className="size-[18px]" />
+            Rider login
+          </Link>
+          <Link
             href="/track"
             onClick={closeAll}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/80 px-5 py-3 text-base font-medium text-white"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/80 px-5 py-3 text-base font-medium text-white"
           >
             Track booking
             <ArrowRight className="size-4" />

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "./icons";
+import { ArrowRight, UserIcon } from "./icons";
 import { Logo } from "./logo";
 import { NavImagePreload } from "./nav-image-preload";
 import { MobileNav } from "./mobile-nav";
@@ -18,6 +18,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="hidden items-center gap-2 rounded-full px-3 py-1.5 text-[15px] font-medium text-white/90 transition-colors hover:text-white lg:inline-flex"
+          >
+            <UserIcon className="size-[18px]" />
+            Rider login
+          </Link>
           <Link
             href="/track"
             className="hidden items-center gap-2 rounded-full border border-white/80 px-5 py-1.5 text-[15px] font-medium text-white transition-colors hover:bg-white hover:text-ink sm:inline-flex"

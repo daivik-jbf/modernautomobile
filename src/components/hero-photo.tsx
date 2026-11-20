@@ -14,8 +14,9 @@ import hero from "@/lib/hero-images.json";
 const variants = hero.variants;
 
 /** pick the smallest pre-built file that is at least `width` px wide (next/image passes the wanted width) */
+// (the ?w= is not used by the static file server — it only lets next/image see that the loader honours `width`)
 const loader = ({ width }: { src: string; width: number }) =>
-  (variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src;
+  `${(variants.find((v) => v.width >= width) ?? variants[variants.length - 1]).src}?w=${width}`;
 
 export function HeroPhoto() {
   return (

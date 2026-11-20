@@ -42,6 +42,20 @@ All of them share `src/components/error-screen.tsx`; artwork is in `public/image
 
 **Maintenance mode:** set `MAINTENANCE_MODE=1` (hosting dashboard or `.env.local`) and every page answers with the maintenance screen and a real HTTP `503` + `Retry-After`. Unset it to go live again — visitors on the maintenance screen are sent back automatically (it re-checks `/api/health` every 20s). Preview the screen any time at `/maintenance?preview`.
 
+
+## Rider login (`/login`) — UI preview
+
+`/login?next=/some/path` is the rider sign-in: a red toolbox on a workshop bench; tapping the drawer front slides it open and an SMS-code form appears in the tray (mobile number → verification code → "Signed in" → redirect to `next`, default `/`). The pictures come from `assets/Modern-Automobiles-Toolbox` (`npm run images:toolbox`); the header, heading, labels, fields and buttons are live HTML. Esc or "Close" shuts the drawer and returns focus to the handle; reduced-motion users get the form straight away.
+
+**There is no authentication backend in this project yet, so the screen runs on a clearly labelled preview stand-in** (a "UI preview · no SMS is sent · code 123456" note is shown in the drawer). Integration points — everything lives in `src/lib/rider-auth.ts`:
+
+| Function | Replace with | Expected response |
+| --- | --- | --- |
+| `sendCode(phone)` | `POST /api/auth/otp/send { phone: "+91…" }` | `200 { codeLength, expiresInSec, resendAfterSec }`; `429 { retryAfterSec }` |
+| `verifyCode(phone, code)` | `POST /api/auth/otp/verify { phone, code }` | `200 { redirectTo? }` + session cookie; `401` wrong code; `410` expired; `429` too many tries |
+
+Map HTTP failures to `AuthError("invalid" \| "expired" \| "rate_limited" \| "invalid_phone" \| "server")` and a thrown `fetch` to `AuthError("network")` — the screen already shows the matching inline message and keeps what the rider typed. Code length, expiry and the resend delay are read from the send response (nothing is hard-coded in the UI). Then set `AUTH_IS_PREVIEW = false` and delete the `preview*` functions. The destination (`next`) is only followed after `verifyCode` resolves and only if it is a same-site path (`safeNext`). Preview helpers for testing the error paths: number `90000 00000` fails once with a network error; code `000000` fails once; any other code than `123456` is "invalid".
+
 ## Images (build scripts)
 
 Source images live in `assets/`; the site uses processed, content-hashed copies in `public/images/` (served as static, immutable files, so there is no on-demand image processing after a deploy). After replacing an image in `assets/`, run the matching script (output files get a content hash in their name, so browsers never show a stale copy):
@@ -55,6 +69,7 @@ Source images live in `assets/`; the site uses processed, content-hashed copies 
 | `npm run images:about` | `assets/Modern-Automobiles-About-Us-Assets` | builds the team photo and the three "What you can expect" icons for the About us section |
 | `npm run images:footer` | `assets/Modern-Automobiles-Footer-Assets` | builds the motorcycle drawing for the site footer |
 | `npm run images:loading` | `assets/Modern-Automobiles-Loading-Screen-Assets` | builds the motorcycle drawing for the loading screen / first-visit splash (the brand lockup there is live text) |
+| `npm run images:toolbox` | `assets/Modern-Automobiles-Toolbox/assets` | repairs and crops the workshop/cabinet picture and builds the drawer front and tray for the rider login |
 | `npm run images:how` | `assets/how_modernautomobiles_images` (`01-…` to `05-…`) | enlarges, sharpens and adds fine grain to the "How it works" photos |
 | `npm run images:parts` | `assets/parts_oil_images` | turns the brand logos into crisp white (or outlined colour) logos for the "Parts & oils we use" carousel |
 

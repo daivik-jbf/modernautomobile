@@ -25,6 +25,15 @@ export function ArrowUp({ className }: IconProps) {
   );
 }
 
+export function UserIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.6" />
+      <path d="M4.5 20c.9-4 3.8-6 7.5-6s6.6 2 7.5 6" />
+    </svg>
+  );
+}
+
 export function ChevronDown({ className }: IconProps) {
   return (
     <svg

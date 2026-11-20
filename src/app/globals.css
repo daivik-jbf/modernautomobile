@@ -571,6 +571,382 @@
 }
 .splash .ld-screen { transition: opacity 0.45s ease, transform 1s cubic-bezier(0.76, 0, 0.24, 1); }
 .splash[data-leaving="true"] .ld-screen { opacity: 0; transform: translateY(-6%); }
+/* ---- Rider login: the toolbox drawer (components/toolbox-login.tsx) ---- */
+/* Everything is laid out in STAGE SPACE (the 1232x861 workshop picture). --cx/--cy/--cw/--ch is the fixed camera
+   crop for the screen size (it never changes while the drawer opens); --u is one stage px in real px. */
+.tb-stage {
+  --cx: 100; --cy: 20; --cw: 940; --ch: 790;
+  --u: calc(100cqw / var(--cw));
+  --tb-ease: cubic-bezier(0.22, 0.8, 0.2, 1);
+  container-type: inline-size;
+  display: grid;
+  width: 100%;
+  overflow-x: clip;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (min-width: 640px) { .tb-stage { --cx: 40; --cy: 20; --cw: 1152; --ch: 800; } }
+@media (min-width: 1280px) { .tb-stage { --cx: 0; --cy: 0; --cw: 1232; --ch: 861; } }
+.tb-stage > * { grid-area: 1 / 1; }
+
+.tb-world {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--cw) / var(--ch);
+  overflow: hidden;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  mask-image:
+    linear-gradient(to right, transparent, #000 6%, #000 94%, transparent),
+    linear-gradient(to bottom, transparent, #000 4%, #000 88%, transparent);
+}
+@media (min-width: 1280px) {
+  .tb-world {
+    mask-image:
+      linear-gradient(to right, transparent, #000 8%),
+      linear-gradient(to bottom, transparent, #000 3%, #000 90%, transparent);
+  }
+}
+.tb-art {
+  position: absolute;
+  left: calc(var(--cx) * var(--u) * -1);
+  top: calc(var(--cy) * var(--u) * -1);
+  width: calc(1232 * var(--u));
+  height: calc(861 * var(--u));
+}
+
+/* soft shadow the pulled-out drawer casts on the cabinet below it */
+.tb-contact {
+  align-self: start;
+  justify-self: start;
+  margin-left: calc((70 - var(--cx)) * var(--u));
+  margin-top: calc((598 - var(--cy)) * var(--u));
+  width: calc(1010 * var(--u));
+  height: calc(120 * var(--u));
+  background: radial-gradient(ellipse 50% 60% at 50% 22%, rgb(0 0 0 / 0.62), transparent 72%);
+  filter: blur(calc(6 * var(--u)));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.tb-stage[data-open="true"] .tb-contact { opacity: 1; transition: opacity 0.4s ease 0.12s; }
+
+/* ---- the tray (recessed drawer) ---- */
+.tb-tray {
+  position: relative;
+  z-index: 2;
+  align-self: start;
+  justify-self: start;
+  margin-left: calc((42 - var(--cx)) * var(--u));
+  margin-top: calc((238 - var(--cy)) * var(--u));
+  width: calc(1050 * var(--u));
+  min-height: calc(386 * var(--u));
+  visibility: hidden;
+  transition: visibility 0s linear 0.42s;
+}
+.tb-stage[data-open="true"] .tb-tray { visibility: visible; transition: visibility 0s; }
+/* the tray picture: 9-sliced so it can grow taller on phones (where the form needs real, readable sizes) */
+.tb-tray-bg {
+  position: absolute;
+  inset: 0;
+  border-style: solid;
+  border-width: 1px 0;
+  border-image-slice: 170 0 112 0 fill;
+  border-image-width: calc(170 * var(--u)) 0 calc(112 * var(--u)) 0;
+  border-image-repeat: stretch;
+  transform-origin: 50% 0;
+  transform: scaleY(0.3);
+  opacity: 0;
+  transition: transform 0.32s var(--tb-ease) 0.06s, opacity 0.16s ease 0.2s;
+}
+.tb-stage[data-open="true"] .tb-tray-bg {
+  transform: none;
+  opacity: 1;
+  transition: transform 0.4s var(--tb-ease) 0.1s, opacity 0.18s ease 0.1s;
+}
+.tb-tray-body {
+  position: relative;
+  padding: max(calc(27 * var(--u)), 16px) 0 max(calc(112 * var(--u)), 54px);
+  opacity: 0;
+  transform: translateY(calc(8 * var(--u)));
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+/* phones: the form is bigger than the picture's scale, so give "Close" its own row above the title */
+@media (max-width: 639px) {
+  .tb-tray-body { padding-top: 40px; }
+  .tb-close { top: 8px; }
+}
+.tb-stage[data-open="true"] .tb-tray-body {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.26s ease 0.36s, transform 0.3s var(--tb-ease) 0.36s;
+}
+
+/* ---- the closed drawer front: ONE button; handle + body are separate pieces ---- */
+.tb-front {
+  position: relative;
+  z-index: 3;
+  align-self: start;
+  justify-self: start;
+  margin-left: calc((164 - var(--cx)) * var(--u));
+  margin-top: calc((242 - var(--cy)) * var(--u));
+  width: calc(808 * var(--u));
+  height: calc(380 * var(--u));
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: #fff;
+  transform-origin: 50% 100%;
+  transition: transform 0.38s var(--tb-ease) 0.12s, opacity 0.16s ease 0s, visibility 0s;
+  outline: none;
+  touch-action: manipulation;
+}
+/* pulled toward the rider: it squashes (perspective) into the tray's own front panel, 1050 wide x 112 tall */
+.tb-stage[data-open="true"] .tb-front {
+  transform: translateY(calc(2 * var(--u))) scale(1.2995, 0.295);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.4s var(--tb-ease) 0.1s, opacity 0.12s ease 0.3s, visibility 0s linear 0.42s;
+}
+/* the drawer front picture: a slim chrome handle bar at the top (first ~17%) and the red face below it.
+   They are two pieces of the same picture so the handle can give a little by itself. */
+.tb-front-body {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(16.5% 0 0 0);
+}
+.tb-handle {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: transform 0.12s ease-out;
+}
+.tb-handle-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  clip-path: inset(0 0 83% 0);
+}
+.tb-stage[data-open="true"] .tb-handle { transform: translateY(calc(7 * var(--u))); }
+.tb-front:hover .tb-handle { transform: translateY(calc(3 * var(--u))); }
+.tb-front:active .tb-handle { transform: translateY(calc(6 * var(--u))); }
+.tb-front:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: calc(-10 * var(--u));
+  border: 3px solid var(--color-cream);
+  border-radius: calc(10 * var(--u));
+  pointer-events: none;
+}
+/* label on the handle: a bold brand-red call-to-action that stands out against the chrome */
+.tb-plate {
+  position: absolute;
+  left: 50%;
+  top: 9.4%; /* centred on the handle bar */
+  translate: -50% -50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  white-space: nowrap;
+  padding: 0.62em 1.3em 0.62em 1.45em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ee2830, var(--color-brand) 55%, #b8141a);
+  color: #fff;
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 0.95),
+    0 0 0 4px rgb(0 0 0 / 0.35),
+    0 12px 28px rgb(0 0 0 / 0.55),
+    0 0 34px rgb(216 25 31 / 0.55);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.45);
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-size: max(15px, calc(34 * var(--u)));
+  line-height: 1;
+  transition: opacity 0.1s ease, filter 0.2s ease;
+}
+/* a soft ring that pulses outward to say "tap me" */
+.tb-plate::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid rgb(255 255 255 / 0.85);
+  animation: tb-pulse 2.4s ease-out 1.2s infinite;
+  pointer-events: none;
+}
+.tb-plate-arrow { width: 1.15em; height: 1.15em; flex: none; animation: tb-bob 1.4s ease-in-out infinite; }
+.tb-front:hover .tb-plate { filter: brightness(1.12); }
+@keyframes tb-pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  70%, 100% { transform: scale(1.22, 1.5); opacity: 0; }
+}
+@keyframes tb-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+.tb-stage[data-open="true"] .tb-plate { opacity: 0; }
+
+/* ---- the live form inside the tray ---- */
+.tb-form,
+.tb-done {
+  width: clamp(250px, calc(640 * var(--u)), calc(100cqw - 36px));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.tb-swap { animation: tb-swap 0.26s var(--ease-out-expo) both; }
+@keyframes tb-swap {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.tb-title {
+  font-size: max(19px, calc(36 * var(--u)));
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--color-cream);
+  text-align: center;
+  margin-bottom: max(8px, calc(12 * var(--u)));
+}
+.tb-sub {
+  text-align: center;
+  font-size: max(14px, calc(22 * var(--u)));
+  line-height: 1.35;
+  color: rgb(252 248 241 / 0.78);
+  margin-bottom: max(8px, calc(12 * var(--u)));
+}
+.tb-sub strong { color: #fff; font-weight: 600; letter-spacing: 0.02em; }
+.tb-lbl {
+  font-size: max(12px, calc(19 * var(--u)));
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(252 248 241 / 0.82);
+  margin-bottom: max(4px, calc(6 * var(--u)));
+}
+.tb-field {
+  display: flex;
+  align-items: stretch;
+  height: max(48px, calc(60 * var(--u)));
+  border: 1.5px solid rgb(255 255 255 / 0.72);
+  border-radius: 8px;
+  background: #151515;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tb-field:focus-within { border-color: #fff; box-shadow: 0 0 0 3px rgb(216 25 31 / 0.75); }
+.tb-field[data-invalid="true"] { border-color: var(--color-brand); box-shadow: 0 0 0 3px rgb(216 25 31 / 0.35); }
+.tb-cc {
+  display: grid;
+  place-items: center;
+  padding: 0 max(14px, calc(22 * var(--u)));
+  border-right: 1px solid rgb(255 255 255 / 0.25);
+  font-size: max(16px, calc(27 * var(--u)));
+  color: rgb(252 248 241 / 0.9);
+}
+.tb-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 0 max(14px, calc(20 * var(--u)));
+  color: #fff;
+  font: inherit;
+  font-size: max(16px, calc(27 * var(--u))); /* 16px minimum: iOS Safari zooms in on smaller inputs */
+}
+.tb-input::placeholder { color: rgb(252 248 241 / 0.42); }
+.tb-code { text-align: center; letter-spacing: 0.42em; font-variant-numeric: tabular-nums; font-weight: 600; }
+.tb-code::placeholder { letter-spacing: 0.3em; }
+.tb-msg { min-height: max(20px, calc(30 * var(--u))); padding-top: 6px; }
+.tb-error, .tb-notice { font-size: max(13px, calc(20 * var(--u))); line-height: 1.3; }
+.tb-error { color: #ff8b8f; }
+.tb-notice { color: rgb(252 248 241 / 0.8); }
+.tb-btn {
+  height: max(48px, calc(60 * var(--u)));
+  border-radius: 8px;
+  background: var(--color-brand);
+  color: #fff;
+  font-size: max(17px, calc(29 * var(--u)));
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 24px -12px rgb(216 25 31 / 0.9);
+  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+}
+.tb-btn:hover:not(:disabled) { background: #e5252b; }
+.tb-btn:active:not(:disabled) { transform: scale(0.985); }
+.tb-btn:disabled { opacity: 0.75; cursor: progress; }
+.tb-btn:focus-visible, .tb-link:focus-visible, .tb-close:focus-visible { outline: 3px solid var(--color-cream); outline-offset: 3px; }
+.tb-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: max(8px, calc(12 * var(--u)));
+}
+.tb-link {
+  padding: 6px 2px;
+  font-size: max(14px, calc(21 * var(--u)));
+  color: rgb(252 248 241 / 0.9);
+  text-decoration: underline;
+  text-decoration-color: rgb(216 25 31 / 0.9);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+.tb-link:disabled { color: rgb(252 248 241 / 0.5); text-decoration: none; cursor: default; }
+.tb-close {
+  position: absolute;
+  top: max(calc(10 * var(--u)), 4px);
+  right: max(calc(190 * var(--u)), 16px);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: max(13px, calc(19 * var(--u)));
+  color: rgb(252 248 241 / 0.7);
+  transition: color 0.2s ease;
+}
+.tb-close:hover { color: #fff; }
+.tb-preview {
+  margin: max(10px, calc(10 * var(--u))) auto 0;
+  text-align: center;
+  font-size: max(11.5px, calc(16 * var(--u)));
+  letter-spacing: 0.04em;
+  color: rgb(252 248 241 / 0.5);
+}
+.tb-preview b { color: rgb(252 248 241 / 0.85); letter-spacing: 0.12em; }
+.tb-busy { display: inline-flex; align-items: center; gap: 10px; }
+.tb-spin {
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgb(255 255 255 / 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tb-rot 0.7s linear infinite;
+}
+@keyframes tb-rot { to { transform: rotate(360deg); } }
+.tb-done { align-items: center; padding: max(10px, calc(30 * var(--u))) 0; }
+.tb-tick { width: max(52px, calc(84 * var(--u))); color: #fff; margin-bottom: 10px; }
+.tb-tick-ring { stroke-dasharray: 145; stroke-dashoffset: 145; stroke: var(--color-brand); animation: tb-draw 0.5s ease-out 0.05s forwards; }
+.tb-tick-check { stroke-dasharray: 40; stroke-dashoffset: 40; animation: tb-draw 0.35s ease-out 0.45s forwards; }
+@keyframes tb-draw { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-stage *,
+  .tb-stage *::before,
+  .tb-stage *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
+}
+
 /* ---- Navbar dropdown panel (see components/nav-links.tsx) ---- */
 .nav-panel {
   opacity: 0;
